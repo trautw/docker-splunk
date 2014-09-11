@@ -16,6 +16,7 @@ $docker = ". #{Dir.pwd}/docker.rc; docker" if File.file?("#{Dir.pwd}/docker.rc")
 $domain = "docker.szz.chtw.de"
 $env = "dev"
 $port = "9080"
+$adminport = "9081"
 
 # Name skydns
 $dns = "172.17.0.2"
@@ -78,19 +79,19 @@ EOM"
 
   desc 'app_start', "run #{$app_name}"
   def app_start
-    run "#{$docker} run --hostname #{$app_name} --volumes-from #{$data_container_name} --interactive=true --tty=true --rm --workdir=/home/#{$user_name} #{$server_image}"
+    run "#{$docker} run --name #{$app_name} --hostname #{$app_name} --volumes-from #{$data_container_name} --interactive=true --tty=true --rm --workdir=/home/#{$user_name} #{$server_image}"
   end
 
   desc 'app_start_nodata', "run #{$app_name}"
   def app_start_nodata
-    run "#{$docker} run -v /home/trautw/Projekte/docker/docker-splunk/var/lib:/opt/splunk/var/lib --rm --hostname #{$app_name} --interactive=true --tty=true --rm --workdir=/home/#{$user_name} -p #{$port}:8000 #{$server_image}"
+    run "#{$docker} run --name #{$app_name} -v /home/trautw/Projekte/docker/docker-splunk/var/lib:/opt/splunk/var/lib --rm --hostname #{$app_name} --interactive=true --tty=true --rm --workdir=/home/#{$user_name} -p #{$port}:8000 -p 9514:9514/udp -p #{$adminport}:8089 #{$server_image}"
   end
 
   desc 'app_kill', 'Kill server'
   def app_kill
-    # run "#{$docker} stop #{$app_name}"
-    # run "#{$docker} kill #{$app_name}"
-    # run "#{$docker} rm   #{$app_name}"
+    run "#{$docker} stop #{$app_name}"
+    run "#{$docker} kill #{$app_name}"
+    run "#{$docker} rm   #{$app_name}"
   end
 
   desc 'show_samplecall', "show how to use #{$app_name}"

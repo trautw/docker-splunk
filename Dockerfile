@@ -32,6 +32,7 @@ RUN yum clean all
 # RUN /opt/splunk/bin/ ./splunk add licenses /opt/splunk/etc/licenses/enterprise/enterprise.lic
 
 EXPOSE 8000
+EXPOSE 8089
 
 # Start splunk and accept the free license
 CMD /opt/splunk/bin/splunk start --accept-license ; while true; do date; sleep 60; done
